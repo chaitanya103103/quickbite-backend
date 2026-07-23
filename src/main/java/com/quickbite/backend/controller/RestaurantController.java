@@ -31,4 +31,10 @@ public class RestaurantController {
     public Optional<Restaurant> getRestaurantById(@PathVariable ObjectId id){
         return restaurantService.getRestaurantById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteRestaurantById(@PathVariable ObjectId id){
+        restaurantService.deleteRestaurantById(id);
+        return true;
+    }
 }

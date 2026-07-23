@@ -26,4 +26,8 @@ public class RestaurantService {
     public Optional<Restaurant> getRestaurantById(ObjectId id){
         return restaurantRepository.findById(id);
     }
+
+    public void deleteRestaurantById(ObjectId id){
+        restaurantRepository.deleteById(id);
+    }
 }
