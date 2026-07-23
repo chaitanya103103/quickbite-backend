@@ -6,6 +6,8 @@ import com.quickbite.backend.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/restaurants")
 public class RestaurantController {
@@ -18,5 +20,8 @@ public class RestaurantController {
         restaurantService.saveRestaurant(restaurant);
         return true;
     }
-    
+    @GetMapping
+    public List<Restaurant> getAllRestaurant(){
+        return restaurantService.getAllRestaurant();
+    }
 }
