@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quickbite.backend.entity.Restaurant;
 
+import java.util.List;
+
 @Service
 public class RestaurantService {
 
@@ -13,5 +15,9 @@ public class RestaurantService {
 
     public void saveRestaurant(Restaurant restaurant){
         restaurantRepository.save(restaurant);
+    }
+
+    public List<Restaurant> getRestaurant(Restaurant restaurant){
+        return restaurantRepository.findAll();
     }
 }
