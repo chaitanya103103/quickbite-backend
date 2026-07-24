@@ -16,10 +16,12 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
 
     public void saveRestaurant(Restaurant restaurant){
+
         restaurantRepository.save(restaurant);
     }
 
     public List<Restaurant> getAllRestaurant(){
+
         return restaurantRepository.findAll();
     }
 
