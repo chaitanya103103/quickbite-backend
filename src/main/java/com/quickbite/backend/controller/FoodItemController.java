@@ -38,4 +38,12 @@ public class FoodItemController {
         return true;
     }
 
+    @PutMapping("/{id}")
+    public boolean updateFoodItem(@PathVariable String id,
+                                  @RequestBody FoodItem foodItem){
+        foodItemService.updateFoodItem(new ObjectId(id),foodItem);
+
+        return true;
+    }
+
 }

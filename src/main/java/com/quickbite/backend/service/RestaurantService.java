@@ -32,4 +32,28 @@ public class RestaurantService {
     public void deleteRestaurantById(ObjectId id){
         restaurantRepository.deleteById(id);
     }
+
+    public boolean updateRestaurant(ObjectId id, Restaurant updatedRestaurant){
+
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
+
+        if (optionalRestaurant.isPresent()){
+            Restaurant existingRestaurant = optionalRestaurant.get();
+
+            existingRestaurant.setName(updatedRestaurant.getName());
+            existingRestaurant.setPhone(updatedRestaurant.getPhone());
+            existingRestaurant.setOwnerName(updatedRestaurant.getOwnerName());
+            existingRestaurant.setAddress(updatedRestaurant.getAddress());
+            existingRestaurant.setOpeningTime(updatedRestaurant.getOpeningTime());
+            existingRestaurant.setClosingTime(updatedRestaurant.getClosingTime());
+            existingRestaurant.setNumberOfChefs(updatedRestaurant.getNumberOfChefs());
+            existingRestaurant.setActiveChefsToday(updatedRestaurant.getActiveChefsToday());
+
+            restaurantRepository.save(existingRestaurant);
+
+            return true;
+
+        }
+        return false;
+    }
 }

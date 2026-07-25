@@ -31,4 +31,22 @@ public class FoodItemService {
         foodItemRepository.deleteById(id);
         return true;
     }
+
+    public boolean updateFoodItem(ObjectId id ,FoodItem updatedFoodItem){
+        Optional<FoodItem> optionalFoodItem = foodItemRepository.findById(id);
+
+        if (optionalFoodItem.isPresent()){
+            FoodItem existingFoodItem = optionalFoodItem.get();
+
+            existingFoodItem.setName(updatedFoodItem.getName());
+            existingFoodItem.setPrice(updatedFoodItem.getPrice());
+            existingFoodItem.setAvailable(updatedFoodItem.isAvailable());
+
+            foodItemRepository.save(existingFoodItem);
+            return true;
+        }
+        return false;
+    }
+
+
 }
