@@ -5,6 +5,8 @@ import com.quickbite.backend.entity.Restaurant;
 import com.quickbite.backend.service.RestaurantService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,30 +20,57 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @PostMapping
-    public boolean createRestaurant(@RequestBody Restaurant restaurant){
-        restaurantService.saveRestaurant(restaurant);
-        return true;
+    public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
+        try {
+            restaurantService.saveRestaurant(restaurant);
+            return new ResponseEntity<>(restaurant,HttpStatus.CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
+
     @GetMapping
-    public List<Restaurant> getAllRestaurant(){
-        return restaurantService.getAllRestaurant();
+    public ResponseEntity<List<Restaurant>> getAllRestaurant(){
+        List<Restaurant> restaurant =  restaurantService.getAllRestaurant();
+        if (restaurant.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            return new ResponseEntity<>(restaurant,HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{id}")
-    public Optional<Restaurant> getRestaurantById(@PathVariable ObjectId id){
-        return restaurantService.getRestaurantById(id);
+    public ResponseEntity<Restaurant> getRestaurantById(@PathVariable ObjectId id){
+        Optional<Restaurant> restaurant = restaurantService.getRestaurantById(id);
+        if (restaurant.isPresent()){
+            return new ResponseEntity<>(restaurant.get(),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteRestaurantById(@PathVariable ObjectId id){
-        restaurantService.deleteRestaurantById(id);
-        return true;
+    public ResponseEntity<?> deleteRestaurantById(@PathVariable ObjectId id) {
+        Optional<Restaurant> restaurant = restaurantService.getRestaurantById(id);
+        if (restaurant.isPresent()){
+            restaurantService.deleteRestaurantById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{id}")
-    public boolean updateRestaurant(@PathVariable String id,
+    public ResponseEntity<Restaurant> updateRestaurant(@PathVariable String id,
                                     @RequestBody Restaurant restaurant){
-        restaurantService.updateRestaurant(new ObjectId(id), restaurant);
-        return true;
-    }
+        try {
+            restaurantService.updateRestaurant(new ObjectId(id), restaurant);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        }
 }

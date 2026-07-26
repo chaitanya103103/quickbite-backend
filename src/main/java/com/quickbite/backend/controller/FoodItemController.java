@@ -4,6 +4,8 @@ import com.quickbite.backend.entity.FoodItem;
 import com.quickbite.backend.service.FoodItemService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,33 +19,59 @@ public class FoodItemController {
     private FoodItemService foodItemService;
 
     @PostMapping
-    public boolean saveFoodItem(@RequestBody FoodItem foodItem){
-        foodItemService.saveFoodItem(foodItem);
-        return true;
+    public ResponseEntity<FoodItem> saveFoodItem(@RequestBody FoodItem foodItem){
+        try {
+            foodItemService.saveFoodItem(foodItem);
+            return new ResponseEntity<>(foodItem, HttpStatus.CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
-    public List<FoodItem> getAllFoodItem(){
-        return foodItemService.findALLFoodItem();
+    public ResponseEntity<List<FoodItem>> getAllFoodItem(){
+        List<FoodItem> foodItem = foodItemService.findALLFoodItem();
+        if(foodItem.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else{
+            return new ResponseEntity<>(foodItem,HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{id}")
-    public Optional<FoodItem> getFoodItemById(@PathVariable ObjectId id){
-        return foodItemService.findFoodItemById(id);
+    public ResponseEntity<FoodItem> getFoodItemById(@PathVariable ObjectId id){
+        Optional<FoodItem> foodItem = foodItemService.findFoodItemById(id);
+        if(foodItem.isPresent()){
+            return new ResponseEntity<>(foodItem.get(),HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteFoodItemById(@PathVariable ObjectId id){
-        foodItemService.deleteFoodItemById(id);
-        return true;
+    public ResponseEntity<?> deleteFoodItemById(@PathVariable ObjectId id){
+        Optional<FoodItem> foodItem =foodItemService.findFoodItemById(id);
+        if(foodItem.isPresent()){
+            foodItemService.deleteFoodItemById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PutMapping("/{id}")
-    public boolean updateFoodItem(@PathVariable String id,
-                                  @RequestBody FoodItem foodItem){
-        foodItemService.updateFoodItem(new ObjectId(id),foodItem);
 
-        return true;
+    @PutMapping("/{id}")
+    public ResponseEntity<FoodItem> updateFoodItem(@PathVariable String id,
+                                  @RequestBody FoodItem foodItem){
+        try {
+            foodItemService.updateFoodItem(new ObjectId(id), foodItem);
+            return new ResponseEntity<>(foodItem,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

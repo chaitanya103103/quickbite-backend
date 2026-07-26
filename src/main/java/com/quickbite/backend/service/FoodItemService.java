@@ -29,6 +29,7 @@ public class FoodItemService {
 
     public boolean deleteFoodItemById(ObjectId id){
         foodItemRepository.deleteById(id);
+
         return true;
     }
 
