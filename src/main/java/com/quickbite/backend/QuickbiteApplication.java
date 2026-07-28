@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class QuickbiteApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(QuickbiteApplication.class, args);
 	}
 

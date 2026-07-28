@@ -1,6 +1,8 @@
 package com.quickbite.backend.service;
 
+import com.quickbite.backend.entity.User;
 import com.quickbite.backend.repository.RestaurantRepository;
+import com.quickbite.backend.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,14 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
-    public void saveRestaurant(Restaurant restaurant){
+    @Autowired
+    private UserService userService;
 
-        restaurantRepository.save(restaurant);
+    public void saveRestaurant(Restaurant restaurant, String userName){
+        User user = userService.findByUserName(userName);
+        Restaurant saved = restaurantRepository.save(restaurant);
+        user.getRestaurants().add(saved);
+        userService.saveEntry(user);
     }
 
     public List<Restaurant> getAllRestaurant(){
