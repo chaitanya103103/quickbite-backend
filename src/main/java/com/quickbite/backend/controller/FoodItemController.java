@@ -1,5 +1,6 @@
 package com.quickbite.backend.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.quickbite.backend.entity.FoodItem;
 import com.quickbite.backend.service.FoodItemService;
 import org.bson.types.ObjectId;
@@ -18,10 +19,10 @@ public class FoodItemController {
     @Autowired
     private FoodItemService foodItemService;
 
-    @PostMapping
-    public ResponseEntity<FoodItem> saveFoodItem(@RequestBody FoodItem foodItem){
+    @PostMapping("/{id}")
+    public ResponseEntity<FoodItem> saveFoodItem(@RequestBody FoodItem foodItem, @PathVariable ObjectId id){
         try {
-            foodItemService.saveFoodItem(foodItem);
+            foodItemService.saveFoodItem(foodItem,id);
             return new ResponseEntity<>(foodItem, HttpStatus.CREATED);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -50,7 +51,9 @@ public class FoodItemController {
         }
     }
 
-    @DeleteMapping("/{id}")
+
+
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<?> deleteFoodItemById(@PathVariable ObjectId id){
         Optional<FoodItem> foodItem =foodItemService.findFoodItemById(id);
         if(foodItem.isPresent()){

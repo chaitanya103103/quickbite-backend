@@ -1,13 +1,19 @@
 package com.quickbite.backend.entity;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
 @Document(collection = "restaurants")
+@Data
 public class Restaurant {
 
     @Id
@@ -29,78 +35,8 @@ public class Restaurant {
 
     private int activeChefsToday;
 
-
-    public int getNumberOfChefs() {
-        return numberOfChefs;
-    }
-
-    public int getActiveChefsToday() {
-        return activeChefsToday;
-    }
-
-    public void setActiveChefsToday(int activeChefsToday) {
-        this.activeChefsToday = activeChefsToday;
-    }
-
-    public void setNumberOfChefs(int numberOfChefs) {
-        this.numberOfChefs = numberOfChefs;
-    }
-
-    public LocalTime getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(LocalTime closingTime) {
-        this.closingTime = closingTime;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public LocalTime getOpeningTime() {
-        return openingTime;
-    }
-
-    public void setOpeningTime(LocalTime openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
+    @DBRef
+    private List<FoodItem> foodItems = new ArrayList<>();
 
 
 }

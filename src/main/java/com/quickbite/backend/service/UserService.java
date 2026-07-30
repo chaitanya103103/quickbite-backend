@@ -28,7 +28,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public boolean deleById(ObjectId id){
+    public boolean deleteById(ObjectId id){
         userRepository.deleteById(id);
         return true;
     }

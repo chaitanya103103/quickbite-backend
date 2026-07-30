@@ -1,7 +1,9 @@
 package com.quickbite.backend.service;
 
 import com.quickbite.backend.entity.FoodItem;
+import com.quickbite.backend.entity.Restaurant;
 import com.quickbite.backend.repository.FoodItemRepository;
+import com.quickbite.backend.repository.RestaurantRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,18 @@ public class FoodItemService {
     @Autowired
     private FoodItemRepository foodItemRepository;
 
-    public void saveFoodItem(FoodItem foodItem){
-        foodItemRepository.save(foodItem);
+    @Autowired
+    private RestaurantService restaurantService;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+
+    public void saveFoodItem(FoodItem foodItem,ObjectId id){
+        Restaurant restaurant = restaurantRepository.findRestaurantById(id);
+        FoodItem saved = foodItemRepository.save(foodItem);
+        restaurant.getFoodItems().add(saved);
+        restaurantService.saveRestaurant(restaurant);
     }
 
     public List<FoodItem> findALLFoodItem(){
