@@ -28,9 +28,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public boolean deleteById(ObjectId id){
+    public void deleteById(ObjectId id){
         userRepository.deleteById(id);
-        return true;
     }
 
     public User findByUserName(String userName){

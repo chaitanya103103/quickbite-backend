@@ -7,6 +7,7 @@ import com.quickbite.backend.repository.RestaurantRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class FoodItemService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
-
+    @Transactional
     public void saveFoodItem(FoodItem foodItem,ObjectId id){
         Restaurant restaurant = restaurantRepository.findRestaurantById(id);
         FoodItem saved = foodItemRepository.save(foodItem);
@@ -39,10 +40,17 @@ public class FoodItemService {
         return foodItemRepository.findById(id);
     }
 
-    public boolean deleteFoodItemById(ObjectId id){
-        foodItemRepository.deleteById(id);
-
-        return true;
+    @Transactional
+    public void deleteFoodItemById(ObjectId id){
+        Optional<FoodItem> foodItem = foodItemRepository.findById(id);
+        if(foodItem.isPresent()){
+            Optional<Restaurant> restaurant = restaurantService.getRestaurantById(foodItem.get().getRestaurantId());
+            if (restaurant.isPresent()){
+                restaurant.get().getFoodItems().removeIf(x -> x.getId().equals(id));
+                restaurantService.saveRestaurant(restaurant.get());
+                foodItemRepository.deleteById(id);
+            }
+        }
     }
 
     public boolean updateFoodItem(ObjectId id ,FoodItem updatedFoodItem){

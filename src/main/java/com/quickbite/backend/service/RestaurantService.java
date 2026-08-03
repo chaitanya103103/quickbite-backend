@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quickbite.backend.entity.Restaurant;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ public class RestaurantService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public void saveRestaurant(Restaurant restaurant, String userName){
         User user = userService.findByUserName(userName);
         Restaurant saved = restaurantRepository.save(restaurant);
@@ -41,7 +43,10 @@ public class RestaurantService {
         return restaurantRepository.findById(id);
     }
 
-    public void deleteRestaurantById(ObjectId id){
+    public void deleteRestaurantById(ObjectId id,String name){
+        User user = userService.findByUserName(name);
+        user.getRestaurants().removeIf(x -> x.getId().equals(id));
+        userService.saveEntry(user);
         restaurantRepository.deleteById(id);
     }
 

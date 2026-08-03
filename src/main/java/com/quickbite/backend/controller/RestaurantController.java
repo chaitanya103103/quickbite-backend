@@ -65,10 +65,10 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/id/{username}/{id}")
-    public ResponseEntity<?> deleteRestaurantById(@PathVariable ObjectId id) {
+    public ResponseEntity<?> deleteRestaurantById(@PathVariable ObjectId id,@PathVariable String username) {
         Optional<Restaurant> restaurant = restaurantService.getRestaurantById(id);
         if (restaurant.isPresent()){
-            restaurantService.deleteRestaurantById(id);
+            restaurantService.deleteRestaurantById(id,username);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         else{
